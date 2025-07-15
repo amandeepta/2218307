@@ -7,5 +7,5 @@ function generateRandomCode(size = 6) {
     return result;
   }
   
-  module.exports = { generateRandomCode };
+module.exports = { generateRandomCode };
   
