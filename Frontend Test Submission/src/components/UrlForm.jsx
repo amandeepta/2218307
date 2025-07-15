@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { TextField, Button, Grid, Typography, Paper, Box } from '@mui/material'
 import { shortenUrls } from '../api/urlService'
-import { logActivity } from '../api/log'
 
 export default function UrlForm() {
   const [inputs, setInputs] = useState([{ url: '', shortcode: '', validity: '' }])
@@ -21,14 +20,8 @@ export default function UrlForm() {
     for (let i = 0; i < inputs.length; i++) {
       const x = inputs[i]
       const r = /^(https?:\/\/)[^\s$.?#].[^\s]*$/
-      if (!r.test(x.url)) {
-        logActivity("frontend", "warn", "form", `Invalid URL at index ${i}`)
-        return false
-      }
-      if (x.validity && (!/^\d+$/.test(x.validity) || +x.validity <= 0)) {
-        logActivity("frontend", "warn", "form", `Invalid validity at index ${i}`)
-        return false
-      }
+      if (!r.test(x.url)) return false
+      if (x.validity && (!/^\d+$/.test(x.validity) || +x.validity <= 0)) return false
     }
     return true
   }
@@ -40,14 +33,8 @@ export default function UrlForm() {
       shortcode: x.shortcode || undefined,
       validityInMinutes: x.validity ? +x.validity : undefined,
     }))
-    logActivity("frontend", "info", "form", `Sending ${p.length} URLs for shortening`)
     const res = await shortenUrls(p)
-    if (res) {
-      setResults(res)
-      res.forEach(r =>
-        logActivity("frontend", "info", "form", `Short URL generated: ${r.shortUrl}`)
-      )
-    }
+    if (res) setResults(res)
   }
 
   return (
