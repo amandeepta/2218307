@@ -30,8 +30,8 @@ export default function UrlForm() {
     if (!validate()) return
     const p = inputs.map(x => ({
       longUrl: x.url,
-      shortcode: x.shortcode || undefined,
       validityInMinutes: x.validity ? +x.validity : undefined,
+      shortcode: x.shortcode || undefined,
     }))
     const res = await shortenUrls(p)
     if (res) setResults(res)
